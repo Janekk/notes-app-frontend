@@ -6,7 +6,7 @@ import {Button, TextField, Paper, Container} from "@material-ui/core"
 import {makeStyles} from "@material-ui/core/styles"
 import {useHistory} from "react-router-dom"
 
-export function Register() {
+export default function Register() {
   const useStyles = makeStyles((theme) => ({
     root: {
       padding: "1rem",
@@ -25,7 +25,7 @@ export function Register() {
   }))
   const classes = useStyles()
 
-  const {isAuthenticated, showError} = useContext(AppContext)
+  const {isAuthenticated, showError, showSuccess} = useContext(AppContext)
 
   const [formInput, setFormInput] = useReducer((state, newState) => ({...state, ...newState}), {
     name: "",
@@ -46,8 +46,9 @@ export function Register() {
     try {
       await register(name, email, password)
       history.push("/login")
+      showSuccess("You have successfully signed up!")
     } catch (e) {
-      showError(e.message)
+      showError(e)
     }
   }
 

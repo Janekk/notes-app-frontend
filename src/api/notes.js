@@ -13,7 +13,7 @@ export const edit = async (id, title, content) => {
 }
 
 export const create = async (title, content) => {
-    return axios.post(`/notes`, {title, content})
+  return axios.post(`/notes`, {title, content})
 }
 
 export const share = async (id, email, validUntil) => {

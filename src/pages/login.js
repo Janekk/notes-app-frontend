@@ -1,12 +1,13 @@
 import React, {useContext, useReducer} from "react"
 import {AppContext} from "../AppContext"
 import {login} from "../api/auth"
-import {Link, Redirect} from "react-router-dom"
+import {Link, Redirect, useLocation} from "react-router-dom"
+import queryString from "query-string"
 import UserSession from "../auth/UserSession"
 import {Button, TextField, Paper, Container} from "@material-ui/core"
 import {makeStyles} from "@material-ui/core/styles"
 
-export function Login() {
+export default function Login() {
   const useStyles = makeStyles((theme) => ({
     root: {
       padding: "1rem",
@@ -46,12 +47,14 @@ export function Login() {
       UserSession.setToken(data.token)
       setAuth(data)
     } catch (e) {
-      showError(e.message)
+      showError(e)
     }
   }
 
+  const location = useLocation()
   if (isAuthenticated) {
-    return <Redirect to="/" />
+    const query = queryString.parse(location.search)
+    return <Redirect to={query.redirectTo || ""} />
   }
   const {email, password} = formInput
 

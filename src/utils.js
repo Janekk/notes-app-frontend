@@ -1,6 +1,6 @@
 const NotePermissionTypes = {
-    View: "view",
-    Edit: "edit",
+  View: "view",
+  Edit: "edit",
 }
 
 export {NotePermissionTypes}

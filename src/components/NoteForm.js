@@ -1,5 +1,5 @@
-import React, { useReducer, useContext } from "react"
-import { useHistory } from "react-router-dom"
+import React, {useReducer, useContext} from "react"
+import {useHistory} from "react-router-dom"
 import {
   makeStyles,
   TextField,
@@ -12,9 +12,9 @@ import {
 } from "@material-ui/core"
 import ShareIcon from "@material-ui/icons/Share"
 import dayjs from "dayjs"
-import { edit, create, share } from "../api/notes"
-import { AppContext } from "../AppContext"
-import { NotePermissionTypes } from "../utils"
+import {edit, create, share} from "../api/notes"
+import {AppContext} from "../AppContext"
+import {NotePermissionTypes} from "../utils"
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-export default function NoteForm({ note, permissionType, isCreateMode }) {
+export default function NoteForm({note, permissionType, isCreateMode}) {
   const classes = useStyles()
   const [open, setOpen] = React.useState(false)
 
@@ -50,42 +50,44 @@ export default function NoteForm({ note, permissionType, isCreateMode }) {
       showSuccess(`Message has been shared with ${shareEmail}!`)
       closeShareDialog()
     } catch (e) {
-      showError(e.message)
+      showError(e)
     }
   }
 
-  const [formInput, setFormInput] = useReducer((state, newState) => ({ ...state, ...newState }), {
+  const [formInput, setFormInput] = useReducer((state, newState) => ({...state, ...newState}), {
     title: note.title,
     content: note.content,
   })
-  const { showError, showSuccess } = useContext(AppContext)
+  const {showError, showSuccess} = useContext(AppContext)
   const history = useHistory()
 
   const saveNote = async () => {
-    const { title, content } = formInput
+    const {title, content} = formInput
     try {
       if (isCreateMode) {
-        const { data: { note } } = await create(title, content)
+        const {
+          data: {note},
+        } = await create(title, content)
         history.push(`/edit/${note.id}`)
-        showSuccess('Message has been added!')
+        showSuccess("Message has been added!")
       } else {
-        await edit(note.is, title, content)
-        showSuccess('Message saved!')
+        await edit(note.id, title, content)
+        showSuccess("Message saved!")
       }
     } catch (e) {
-      showError(e.message)
+      showError(e)
     }
   }
   const handleInput = (evt) => {
     const name = evt.target.name
     const newValue = evt.target.value
-    setFormInput({ [name]: newValue })
+    setFormInput({[name]: newValue})
   }
 
-  const { title, content } = formInput
+  const {title, content} = formInput
   const canEdit = isCreateMode || permissionType === NotePermissionTypes.Edit
-  const [shareValidUntil, setShareValidUntil] = React.useState(dayjs().add(7, 'day').toDate());
-  const [shareEmail, setShareEmail] = React.useState('');
+  const [shareValidUntil, setShareValidUntil] = React.useState(dayjs().add(7, "day").toDate())
+  const [shareEmail, setShareEmail] = React.useState("")
 
   return (
     <form className={classes.root} noValidate autoComplete="off">
@@ -115,17 +117,26 @@ export default function NoteForm({ note, permissionType, isCreateMode }) {
             Save
           </Button>
         )}
-        {!isCreateMode && canEdit &&
+        {!isCreateMode && canEdit && (
           <Button variant="contained" color="primary" onClick={openShareDialog}>
             Share <ShareIcon />
           </Button>
-        }
+        )}
       </div>
       <Dialog onClose={closeShareDialog} open={open}>
         <DialogTitle>Share note</DialogTitle>
         <DialogContent>
           <DialogContentText>Enter another user's email to share this note.</DialogContentText>
-          <TextField autoFocus margin="dense" id="name" label="Email Address" type="email" value={shareEmail} onChange={(e) => setShareEmail(e.target.value)} fullWidth />
+          <TextField
+            autoFocus
+            margin="dense"
+            id="name"
+            label="Email Address"
+            type="email"
+            value={shareEmail}
+            onChange={(e) => setShareEmail(e.target.value)}
+            fullWidth
+          />
           <div>
             <TextField
               label="Share valid until"
